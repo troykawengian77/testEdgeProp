@@ -1,20 +1,21 @@
-import { API } from '../../../api';
+import { API } from '../../../lib/api';
 
-export const getListScanBIN = (bin) => {
+export const getListCharacter = (page = 1) => {
   return async dispatch => {
-    const { request } = API(true, 2);
-    dispatch({ type: 'GET_SCAN_BIN_START' });
+    const { request } = API();
+    dispatch({ type: 'GET_LIST_CHARACTER_START' });
     try {
-      const resp = await request.get(`api/wh-bin-scan?bin=${bin}`);
-      let data = resp.data ? resp.data.data : [];
+      const resp = await request.get(`character/?page=${page}`);
+      let data = resp.data ? resp.data.results : [];
+      let info = resp.data ? resp.data.info : [];
 
       dispatch({
-        type: 'GET_SCAN_BIN_SUCCESS',
-        data,
+        type: 'GET_LIST_CHARACTER_SUCCESS',
+        data, info
       });
       return data;
     } catch (err) {
-      dispatch({ type: 'GET_SCAN_BIN_FAIL' });
+      dispatch({ type: 'GET_LIST_CHARACTER_FAIL' });
       throw err?.response?.data;
     }
   };
