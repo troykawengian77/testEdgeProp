@@ -34,7 +34,7 @@ const EpisodePage = ({ navigation }) => {
     }, [isFocus]);
 
     useEffect(() => {
-        if (results) {
+        if (data.length == 0) {
             setData(results)
         }
     }, [results]);
