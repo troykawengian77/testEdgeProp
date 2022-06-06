@@ -6,12 +6,13 @@ import {
     Text,
     View,
     TextInput,
-    ScrollView, Image
+    ScrollView, Image, Alert
 } from 'react-native';
 import { getListCharacter } from '../redux/character/actions';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import Loading from '../lib/components/Loading';
-
+import { useNetInfo } from "@react-native-community/netinfo";
+import Toast from 'react-native-toast-message';
 
 const CharacterPage = ({ navigation }) => {
     const dispatch = useDispatch();
@@ -19,11 +20,13 @@ const CharacterPage = ({ navigation }) => {
     const results = useSelector(state => state.character.list_character);
     const info = useSelector(state => state.character.info);
     const loading = useSelector(state => state.character.loading);
+    const netInfo = useNetInfo();
 
     const [page, setPage] = useState(1);
     const [data, setData] = useState([]);
 
     useEffect(() => {
+        setPage(1)
         dispatch(getListCharacter(page))
         setData(results)
     }, [isFocus]);
@@ -36,7 +39,6 @@ const CharacterPage = ({ navigation }) => {
 
     const _onLoadMore = () => {
         let pageCount = page + 1
-        console.log(pageCount)
         if (pageCount <= info.pages) {
             setPage(pageCount)
             dispatch(getListCharacter(pageCount))
@@ -46,7 +48,7 @@ const CharacterPage = ({ navigation }) => {
 
     const _renderItem = (item, key) => {
         return (
-            <View key={key} style={styles.containerBox}>
+            <TouchableOpacity onPress={() => navigation.navigate('CharacterDetail', { id: item.id })} key={key} style={styles.containerBox}>
                 <View style={styles.containerList}>
                     <View style={styles.imageContainer}>
                         <Image
@@ -55,11 +57,11 @@ const CharacterPage = ({ navigation }) => {
                         />
                     </View>
                     <View style={styles.contentContainer}>
-                        <Text style={styles.contentTitle}>{item.name}</Text>
+                        <Text style={[styles.contentTitle, { color: item.gender == 'Male' ? '#6393dF' : '#FEAFB9' }]}>{item.name}</Text>
                         <Text style={styles.contentSubTitle}>{item.species}</Text>
                     </View>
                 </View>
-            </View>
+            </TouchableOpacity>
         )
     }
 
@@ -68,24 +70,23 @@ const CharacterPage = ({ navigation }) => {
             showsVerticalScrollIndicator={false}
             onScroll={({ nativeEvent }) => {
                 if (isCloseToBottom(nativeEvent)) {
-                    console.log('masuk')
                     _onLoadMore()
                 }
             }}
             scrollEventThrottle={400}
         >
             <Loading visible={loading} />
-            <TouchableOpacity style={styles.container}>
+            <View style={styles.container}>
                 <Text style={styles.textLabel}>Character List</Text>
                 <View>
-                    {                        
+                    {
                         data &&
                             data.length > 0 ?
                             data.map((item, key) => _renderItem(item, key))
                             : null
                     }
                 </View>
-            </TouchableOpacity>
+            </View>
         </ScrollView>
     )
 }
@@ -152,7 +153,6 @@ const styles = StyleSheet.create({
         borderRadius: 5
     },
     contentTitle: {
-        color: '#6393dF',
         fontSize: 18
     },
     contentSubTitle: {

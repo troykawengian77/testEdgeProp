@@ -23,8 +23,8 @@ export default function NavbarBottom() {
         tabBarLabelStyle: {
           fontSize: 18,
         },
-        tabBarActiveTintColor: 'black',
-        tabBarInactiveTintColor: '#91909E',
+        tabBarActiveTintColor: '#737BC6',
+        tabBarInactiveTintColor: '#C6C6C6',
       })}>
       <Tab.Screen
         name="Character"
