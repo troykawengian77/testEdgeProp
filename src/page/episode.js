@@ -31,8 +31,13 @@ const EpisodePage = ({ navigation }) => {
     useEffect(() => {
         setPage(1)
         dispatch(getListEpisode(page))
-        setData(results)
     }, [isFocus]);
+
+    useEffect(() => {
+        if (results) {
+            setData(results)
+        }
+    }, [results]);
 
     const isCloseToBottom = ({ layoutMeasurement, contentOffset, contentSize }) => {
         const paddingToBottom = 20;
@@ -134,9 +139,8 @@ const EpisodePage = ({ navigation }) => {
                 <View>
                     {
                         data &&
-                            data.length > 0 ?
+                            data.length > 0 &&
                             data.map((item, key) => _renderItem(item, key))
-                            : null
                     }
                 </View>
             </View>

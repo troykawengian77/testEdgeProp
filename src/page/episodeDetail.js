@@ -36,10 +36,13 @@ const EpisodeDetailPage = ({ route, navigation }) => {
 
     useEffect(() => {
         dispatch(getDetailEpisode(id))
+    }, [isFocus]);
+
+    useEffect(() => {
         if (resultsCharacters) {
             _loadImage()
         }
-    }, [isFocus]);
+    }, [resultsCharacters]);
 
     const _loadImage = async () => {
         const { request } = API();
